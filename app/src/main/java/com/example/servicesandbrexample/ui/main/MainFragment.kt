@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.example.servicesandbrexample.AppState
-import com.example.servicesandbrexample.R
 import com.example.servicesandbrexample.databinding.FragmentMainBinding
-import com.example.servicesandbrexample.model.entities.Weather
+import com.example.servicesandbrexample.model.entities.Description
 import com.example.servicesandbrexample.vm.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,10 +18,6 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModel()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,38 +31,33 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val observer = Observer<AppState>{renderData(it)}
         viewModel.getLiveData().observe(viewLifecycleOwner, observer)
-        viewModel.getWeather()
+        viewModel.getTranslationData()
     }
     private fun renderData(appState: AppState) = with(binding){
         when(appState){
             is AppState.Error -> {
-                weatherGroup.visibility = View.INVISIBLE
+                inputView.visibility = View.INVISIBLE
+                outputView.visibility = View.INVISIBLE
                 progressBar.visibility = View.GONE
                 Snackbar.make(root, "Error: ${appState.error}", Snackbar.LENGTH_INDEFINITE)
-                    .setAction("Reload"){viewModel.getWeather()}
+                    .setAction("Reload"){viewModel.getTranslationData()}
                     .show()
             }
             is AppState.Loading -> {
-                weatherGroup.visibility = View.INVISIBLE
+                inputView.visibility = View.INVISIBLE
+                outputView.visibility = View.INVISIBLE
                 progressBar.visibility = View.VISIBLE
             }
             is AppState.Success -> {
-                weatherGroup.visibility = View.VISIBLE
+                inputView.visibility = View.VISIBLE
+                outputView.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
-                setData(appState.weatherData)
+                setData(appState.response)
             }
         }
     }
-
-    private fun setData(weatherData: Weather) = with(binding) {
-        cityName.text = weatherData.city.city
-        cityCoordinates.text = String.format(
-            getString(R.string.city_coordinates),
-            weatherData.city.lat.toString(),
-            weatherData.city.lon.toString()
-        )
-        temperatureValue.text = weatherData.temp.toString()
-        feelsLikeValue.text = weatherData.feelLike.toString()
+    private fun setData(response: ArrayList<Description>) = with(binding) {
+        outputTv.text = response.toString()
     }
 
     override fun onDestroyView() {

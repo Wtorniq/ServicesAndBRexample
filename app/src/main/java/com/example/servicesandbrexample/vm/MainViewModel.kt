@@ -10,12 +10,13 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
     private val liveData = MutableLiveData<AppState>()
 
     fun getLiveData(): LiveData<AppState> = liveData
-    fun getWeather() = getDataFromLocalSource()
+    fun getTranslationData() = getDataFromServer()
 
-    private fun getDataFromLocalSource(){
+    private fun getDataFromServer(){
         liveData.value = AppState.Loading
         Thread{
-            liveData.postValue(AppState.Success(repository.getWeatherFromLocalStorage()))
+            val response = repository.getTranslationResponse()
+            liveData.postValue(AppState.Success(response))
         }.start()
     }
 }

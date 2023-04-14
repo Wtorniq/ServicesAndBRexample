@@ -1,9 +1,10 @@
 package com.example.servicesandbrexample
 
-import com.example.servicesandbrexample.model.entities.Weather
+import com.example.servicesandbrexample.model.entities.Description
+
 
 sealed class AppState{
-    data class Success(val weatherData: Weather): AppState()
+    data class Success(val response: ArrayList<Description>): AppState()
     data class Error(val error: Throwable): AppState()
     object Loading: AppState()
 }

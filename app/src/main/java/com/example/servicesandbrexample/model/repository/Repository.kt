@@ -1,8 +1,7 @@
 package com.example.servicesandbrexample.model.repository
 
-import com.example.servicesandbrexample.model.entities.Weather
+import com.example.servicesandbrexample.model.entities.Description
 
 interface Repository {
-    fun getWeatherFromServer(): Weather
-    fun getWeatherFromLocalStorage(): Weather
+    fun getTranslationResponse(): ArrayList<Description>
 }

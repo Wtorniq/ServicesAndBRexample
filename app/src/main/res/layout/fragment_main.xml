@@ -7,71 +7,35 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainFragment">
 
-    <TextView
-        android:id="@+id/cityName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/city_name_margin_top"
-        android:textSize="35sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/input_view"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:backgroundTint="#CFCFCF"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Москва" />
+        app:layout_constraintBottom_toTopOf="@+id/output_view">
 
-    <TextView
-        android:id="@+id/cityCoordinates"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityName"
-        tools:text="lt/ln: 55.755826, 37.617299900000035" />
-
-    <TextView
-        android:id="@+id/temperatureLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_15_dp"
-        android:text="@string/temperature_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cityCoordinates" />
-
-    <TextView
-        android:id="@+id/temperatureValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_15_dp"
-        android:textSize="@dimen/temperature_value_text_size"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureLabel"
-        tools:text="+15" />
-
-    <TextView
-        android:id="@+id/feelsLikeLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_15_dp"
-        android:text="@string/feels_like_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/temperatureValue" />
-
-    <TextView
-        android:id="@+id/feelsLikeValue"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_15_dp"
-        android:textSize="@dimen/feels_like_text_size"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/feelsLikeLabel"
-        tools:text="-23" />
+        <EditText
+            android:id="@+id/input_et"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:autofillHints="@string/app_name"
+            android:inputType="text"
+            android:hint="@string/app_name" />
+    </androidx.cardview.widget.CardView>
+    <androidx.cardview.widget.CardView
+        android:id="@+id/output_view"
+        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:backgroundTint="#7C7B7B"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_view"
+        >
+        <TextView
+            android:id="@+id/output_tv"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent" />
+    </androidx.cardview.widget.CardView>
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -83,13 +47,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/weatherGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="invisible"
-        tools:visibility="visible"
-        app:constraint_referenced_ids="cityName,cityCoordinates,temperatureLabel,temperatureValue,feelsLikeLabel,feelsLikeValue" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
