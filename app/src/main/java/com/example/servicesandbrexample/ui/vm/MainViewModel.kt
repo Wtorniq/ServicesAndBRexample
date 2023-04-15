@@ -1,9 +1,9 @@
-package com.example.servicesandbrexample.vm
+package com.example.servicesandbrexample.ui.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.servicesandbrexample.AppState
+import com.example.servicesandbrexample.utils.AppState
 import com.example.servicesandbrexample.model.repository.Repository
 
 class MainViewModel(private val repository: Repository) : ViewModel() {

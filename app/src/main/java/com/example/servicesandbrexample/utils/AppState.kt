@@ -1,4 +1,4 @@
-package com.example.servicesandbrexample
+package com.example.servicesandbrexample.utils
 
 import com.example.servicesandbrexample.model.entities.Description
 

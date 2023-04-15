@@ -1,6 +1,7 @@
-package com.example.servicesandbrexample
+package com.example.servicesandbrexample.utils
 
 import android.app.Application
+import com.example.servicesandbrexample.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 

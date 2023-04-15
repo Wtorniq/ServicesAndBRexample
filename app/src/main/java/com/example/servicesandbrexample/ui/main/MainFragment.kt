@@ -1,15 +1,21 @@
 package com.example.servicesandbrexample.ui.main
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.example.servicesandbrexample.AppState
+import com.example.servicesandbrexample.utils.AppState
 import com.example.servicesandbrexample.databinding.FragmentMainBinding
 import com.example.servicesandbrexample.model.entities.Description
-import com.example.servicesandbrexample.vm.MainViewModel
+import com.example.servicesandbrexample.services.ForegroundService
+import com.example.servicesandbrexample.ui.vm.MainViewModel
 import com.google.android.material.snackbar.Snackbar
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -18,6 +24,13 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: MainViewModel by viewModel()
+
+    private val testReceiver = object : BroadcastReceiver(){
+        override fun onReceive(context: Context?, intent: Intent?) {
+            Log.d("", "receiverResult: ${intent?.getBooleanExtra(ForegroundService.INTENT_SERVICE_DATA, false)}")
+        }
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,7 +45,17 @@ class MainFragment : Fragment() {
         val observer = Observer<AppState>{renderData(it)}
         viewModel.getLiveData().observe(viewLifecycleOwner, observer)
         viewModel.getTranslationData()
+
+        Thread{
+            ForegroundService.start(requireContext())
+        }.start()
     }
+
+    override fun onStart() {
+        super.onStart()
+        activity?.registerReceiver(testReceiver, IntentFilter(ForegroundService.INTENT_ACTION_KEY))
+    }
+
     private fun renderData(appState: AppState) = with(binding){
         when(appState){
             is AppState.Error -> {
@@ -58,6 +81,11 @@ class MainFragment : Fragment() {
     }
     private fun setData(response: ArrayList<Description>) = with(binding) {
         outputTv.text = response.toString()
+    }
+
+    override fun onStop() {
+        activity?.unregisterReceiver(testReceiver)
+        super.onStop()
     }
 
     override fun onDestroyView() {

@@ -1,7 +1,8 @@
-package com.example.servicesandbrexample
+package com.example.servicesandbrexample.ui.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.servicesandbrexample.R
 import com.example.servicesandbrexample.ui.main.MainFragment
 
 class MainActivity : AppCompatActivity() {
