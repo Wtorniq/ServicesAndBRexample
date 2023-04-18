@@ -1,10 +1,8 @@
 package com.example.servicesandbrexample.ui.main
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -14,6 +12,7 @@ import androidx.lifecycle.Observer
 import com.example.servicesandbrexample.utils.AppState
 import com.example.servicesandbrexample.databinding.FragmentMainBinding
 import com.example.servicesandbrexample.model.entities.Description
+import com.example.servicesandbrexample.services.BoundService
 import com.example.servicesandbrexample.services.ForegroundService
 import com.example.servicesandbrexample.ui.vm.MainViewModel
 import com.google.android.material.snackbar.Snackbar
@@ -22,12 +21,30 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
+    private var isBound = false
+    private var boundService: BoundService.ServiceBinder? = null
 
     private val viewModel: MainViewModel by viewModel()
 
     private val testReceiver = object : BroadcastReceiver(){
         override fun onReceive(context: Context?, intent: Intent?) {
             Log.d("", "receiverResult: ${intent?.getBooleanExtra(ForegroundService.INTENT_SERVICE_DATA, false)}")
+        }
+
+    }
+
+    private val boundServiceConnection: ServiceConnection = object : ServiceConnection{
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            boundService = service as BoundService.ServiceBinder
+            isBound = boundService != null
+            Log.i("", "BOUND SERVICE")
+            Log.i("", "next F: ${service.nextF}")
+
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isBound = false
+            boundService = null
         }
 
     }
@@ -53,6 +70,10 @@ class MainFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
+        if (!isBound){
+            val bindServiceIntent = Intent(context, BoundService::class.java)
+            activity?.bindService(bindServiceIntent, boundServiceConnection, Context.BIND_AUTO_CREATE)
+        }
         activity?.registerReceiver(testReceiver, IntentFilter(ForegroundService.INTENT_ACTION_KEY))
     }
 
@@ -85,6 +106,7 @@ class MainFragment : Fragment() {
 
     override fun onStop() {
         activity?.unregisterReceiver(testReceiver)
+        activity?.unbindService(boundServiceConnection)
         super.onStop()
     }
 
