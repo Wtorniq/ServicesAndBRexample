@@ -1,6 +1,9 @@
 package com.example.servicesandbrexample.ui.main
 
+import android.Manifest
 import android.content.*
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -8,6 +11,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.example.servicesandbrexample.R
 import com.example.servicesandbrexample.cp.ContentProviderFragment
@@ -25,6 +31,14 @@ class MainFragment : Fragment() {
     private val binding get() = _binding!!
     private var isBound = false
     private var boundService: BoundService.ServiceBinder? = null
+
+    private val permissionResult = registerForActivityResult(ActivityResultContracts.RequestPermission()){ result ->
+        if (result){
+            getLocation()
+        } else {
+            Toast.makeText(context, "need permission", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     private val viewModel: MainViewModel by viewModel()
 
@@ -68,11 +82,42 @@ class MainFragment : Fragment() {
 /*        Thread{
             ForegroundService.start(requireContext())
         }.start()*/
-        binding.cpButton.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.container, ContentProviderFragment.newInstance())
-                .addToBackStack(null)
-                .commit()
+        with(binding){
+            cpButton.setOnClickListener {
+                parentFragmentManager.beginTransaction()
+                    .replace(R.id.container, ContentProviderFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit()
+            }
+            locationButton.setOnClickListener {
+                checkLocationPermission()
+            }
+        }
+    }
+
+    private fun checkLocationPermission() {
+        context?.let{ notNullContext ->
+            when (PackageManager.PERMISSION_GRANTED){
+                ContextCompat.checkSelfPermission(notNullContext, Manifest.permission.ACCESS_FINE_LOCATION) -> {
+                    getLocation()
+                }
+                else -> {
+                    requestPermission()
+                }
+            }
+        }
+    }
+
+    private fun requestPermission() {
+        permissionResult.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    private fun getLocation(){
+        activity?.let { activity ->
+            val locationManager = activity.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                // get location provider and use it
+            }
         }
     }
 
