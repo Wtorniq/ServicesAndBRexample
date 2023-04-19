@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
 
     <application
         android:name=".utils.App"
@@ -16,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ServicesAndBRexample"
         tools:targetApi="31">
+
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
@@ -29,14 +31,17 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        <service android:name=".services.SomeService"/>
-        <service android:name=".services.ForegroundService"/>
-        <service android:name=".services.BoundService"/>
-        <receiver android:name=".br.SomeBroadcastReceiver"
-            android:exported="true"
-            android:enabled="true">
+
+        <service android:name=".services.SomeService" />
+        <service android:name=".services.ForegroundService" />
+        <service android:name=".services.BoundService" />
+
+        <receiver
+            android:name=".br.SomeBroadcastReceiver"
+            android:enabled="true"
+            android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.LOCALE_CHANGED"/>
+                <action android:name="android.intent.action.LOCALE_CHANGED" />
             </intent-filter>
         </receiver>
     </application>

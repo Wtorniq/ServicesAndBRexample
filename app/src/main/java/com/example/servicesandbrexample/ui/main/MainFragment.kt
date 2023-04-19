@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.example.servicesandbrexample.R
+import com.example.servicesandbrexample.cp.ContentProviderFragment
 import com.example.servicesandbrexample.utils.AppState
 import com.example.servicesandbrexample.databinding.FragmentMainBinding
 import com.example.servicesandbrexample.model.entities.Description
@@ -36,7 +38,7 @@ class MainFragment : Fragment() {
     private val boundServiceConnection: ServiceConnection = object : ServiceConnection{
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
             boundService = service as BoundService.ServiceBinder
-            isBound = boundService != null
+            isBound = true
             Log.i("", "BOUND SERVICE")
             Log.i("", "next F: ${service.nextF}")
 
@@ -63,9 +65,15 @@ class MainFragment : Fragment() {
         viewModel.getLiveData().observe(viewLifecycleOwner, observer)
         viewModel.getTranslationData()
 
-        Thread{
+/*        Thread{
             ForegroundService.start(requireContext())
-        }.start()
+        }.start()*/
+        binding.cpButton.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.container, ContentProviderFragment.newInstance())
+                .addToBackStack(null)
+                .commit()
+        }
     }
 
     override fun onStart() {
@@ -114,7 +122,9 @@ class MainFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
     companion object {
+        @JvmStatic
         fun newInstance() = MainFragment()
     }
 }
